@@ -1007,8 +1007,7 @@ def assert(expected, actual)
   end
 end
 
-def getDiff(line)
-  numbers = line.split
+def getDiff(numbers)
   i = 0
   diff = []
   until i > (numbers.size - 2)
@@ -1020,10 +1019,10 @@ def getDiff(line)
   return diff
 end
 
-assert([1,1,1], getDiff("1 2 3 4"))
-assert([2,-4,7], getDiff("1 3 -1 6"))
-assert([-1,-1,-1], getDiff("4 3 2 1"))
-assert([-2, -1, -4, -1], getDiff("9 7 6 2 1"))
+assert([1,1,1], getDiff([1, 2, 3, 4]))
+assert([2,-4,7], getDiff([1, 3, -1, 6]))
+assert([-1,-1,-1], getDiff([4, 3, 2, 1]))
+assert([-2, -1, -4, -1], getDiff([9, 7, 6, 2, 1]))
 
 def sameDirection(diff)
   dir = []
@@ -1061,16 +1060,36 @@ assert(false, safeDistance([1,7,1]))
 assert(false, safeDistance([-2, -1, -4, -1]))
 
 
-def isSafe?(line)
-  diff = getDiff(line)
+def isSafe?(numbers)
+  diff = getDiff(numbers)
 
   return sameDirection(diff) && safeDistance(diff)
+end
+
+def processLine(line)
+  isOneSafe = false
+  numbers = line.split
+
+  i = 0
+  while i < numbers.size
+    num = copy_wo_element(numbers, i)
+    if isSafe?(num)
+      return true
+    end
+    i+=1
+  end
+
+  return false
+end
+
+def copy_wo_element(arr, index_to_exclude)
+  arr[0,index_to_exclude].concat(arr[index_to_exclude+1..-1])
 end
 
 def run(data)
   lines = data.split("\n")
   safeLevels = lines.filter { | line |
-    isSafe?(line)
+    processLine(line)
   }
   return safeLevels.size
 end
@@ -1082,7 +1101,7 @@ testData = "7 6 4 2 1
 8 6 4 4 1
 1 3 6 7 9"
 
-assert(2, run(testData))
+assert(4, run(testData))
 assert(0, run("9 7 6 2 1"))
 
 puts run(data)
