@@ -1,4 +1,4 @@
-data = File.read("day2_data")
+data = File.read("day2_input")
 
 def assert(expected, actual)
   if expected != actual

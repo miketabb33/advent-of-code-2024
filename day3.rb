@@ -1,4 +1,4 @@
-data = File.read("day3_data")
+data = File.read("day3_input")
 
 expressions =  data.scan(/mul\(\d{1,3}\,\d{1,3}\)|do\(\)|don\'t\(\)/)
 
